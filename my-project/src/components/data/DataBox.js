@@ -1,7 +1,10 @@
 import DataGroup from "./DataGroup";
-import { gql, useQuery } from "@apollo/client";
+// import { gql, useQuery } from "@apollo/client";
+import { request, gql } from "graphql-request";
+import { useQuery } from "react-query";
 
-const statusQuery = gql`
+const endpoint = "https://mock-book-api.herokuapp.com/api/";
+const books = gql`
   {
     books {
       id
@@ -18,9 +21,11 @@ const statusQuery = gql`
 `;
 
 const DataBox = () => {
-  const { data, loading, error } = useQuery(statusQuery);
+  const { data, isLoading, error } = useQuery("query",() => {
+    return request(endpoint, books);
+  });
 
-  if (loading) return "Loading...";
+  if (isLoading) return "Loading...";
   if (error) return <pre>{error.message}</pre>;
 
   return (
