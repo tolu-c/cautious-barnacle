@@ -1,5 +1,5 @@
 // import { gql, useMutation } from "@apollo/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { request, gql } from "graphql-request";
 import { useQuery } from "react-query";
 
@@ -7,8 +7,10 @@ const endpoint = "https://mock-book-api.herokuapp.com/api/";
 
 const Search = () => {
   const [text, setText] = useState("");
+  let searchQuery;
 
-  const searchQuery = gql`
+  useEffect(() => {
+    searchQuery = gql`
     mutation {
       search(text: "${text}") {
         id
@@ -23,6 +25,7 @@ const Search = () => {
       }
     }
   `;
+  }, [text]);
 
   const response = useQuery("mutation", () => {
     return request(endpoint, searchQuery);
@@ -32,7 +35,7 @@ const Search = () => {
   if (isLoading) return "Loading...";
   if (error) return console.log(error);
 
-  console.log(data);
+  // console.log(data);
   return (
     <input
       type="search"
