@@ -1,10 +1,9 @@
 import { useContext } from "react";
-import { request, gql } from "graphql-request";
-import { useQuery } from "react-query";
+import { useQuery, gql } from "@apollo/client";
+// import { request, gql } from "graphql-request";
+// import { useQuery } from "react-query";
 import DataContext from "../../store/data-context";
 import DataItem from "./DataItem";
-
-const endpoint = "https://mock-book-api.herokuapp.com/api/";
 
 const books = gql`
   {
@@ -21,20 +20,19 @@ const books = gql`
     }
   }
 `;
-const DataItemList = ({ receivedData }) => {
+const DataItemList = () => {
   const dataCtx = useContext(DataContext);
-  const { data, isLoading, error } = useQuery("query", () => {
-    return request(endpoint, books);
-  });
+  dataCtx.query = books;
+  const { data, loading, error } = useQuery(dataCtx.query);
 
-  if (isLoading) return "Loading...";
+  if (loading) return "Loading...";
   if (error) return <pre>{error.message}</pre>;
 
-  dataCtx.books = data
+  dataCtx.books = data.books;
+
   // console.log(dataCtx.books);
 
-
-  return dataCtx.books.books.map((book, index) => (
+  return dataCtx.books.map((book, index) => (
     <DataItem key={book.id} receivedData={book} numbering={index} />
   ));
 };
