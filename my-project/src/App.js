@@ -55,9 +55,13 @@ export default function App() {
     console.log(dataCtx.genre);
   };
 
-  if (dataCtx.status === "All") {
+  if (dataCtx.status === "All" && dataCtx.genre === "All") {
     dataCtx.books = data.books;
   } else if (dataCtx.status === "Published") {
+    if (dataCtx.genre === "Action") {
+      dataCtx.books = data.books.filter((book) => book.genre.name === "Action");
+    }
+
     dataCtx.books = data.books.filter(
       (book) => book.status.name === "Published"
     );
@@ -66,6 +70,7 @@ export default function App() {
       (book) => book.status.name === "Not Published"
     );
   }
+  
 
   return (
     <DataContext.Provider

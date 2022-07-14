@@ -1,7 +1,4 @@
-// import { gql, useMutation } from "@apollo/client";
 import { useState } from "react";
-
-// const endpoint = "https://mock-book-api.herokuapp.com/api/";
 
 const Search = () => {
   const [text, setText] = useState("");
