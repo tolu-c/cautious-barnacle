@@ -10,13 +10,20 @@ const FilterByStatus = ({ onAddStatus, onAddBookProps }) => {
     setStatus(event.target.value);
     dataCtx.status = event.target.value;
     onAddStatus(dataCtx.status);
-    onAddBookProps(event.target.value);
+    // onAddBookProps(event.target.value);
   };
 
   return (
-    <div className="w-full">
-      <label htmlFor="status">Filter By Status</label>
-      <select name="status" id="status" onChange={statusHandler}>
+    <div className="flex gap-x-4 w-full items-center">
+      <label htmlFor="status" className="text-sm font-bold">
+        Filter By Status
+      </label>
+      <select
+        name="status"
+        id="status"
+        onChange={statusHandler}
+        className="capitalize"
+      >
         <option value="All">All</option>
         <option value="Published">published</option>
         <option value="Not Published">not published</option>

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import DataBox from "./components/data/DataBox";
 import Header from "./components/Header";
 import Layout from "./components/ui/Layout";
@@ -23,58 +23,54 @@ const booksQuery = gql`
 
 export default function App() {
   const dataCtx = useContext(DataContext);
-  dataCtx.query = booksQuery;
-  const { data, loading, error } = useQuery(dataCtx.query);
+  // const [books, setBooks] = useState([]);
+  const { data, loading, error } = useQuery(booksQuery);
 
-  console.log(dataCtx);
-
-  const [books, setBooks] = useState([]);
-
-  const filterFunction = (statusValue) => {
-    if (statusValue === "All") {
-      setBooks(data.books);
-    } else if (statusValue === "Published") {
-      setBooks(data.books.filter((book) => book.status.name === "Published"));
-    } else if (statusValue === "Not Published") {
-      setBooks(
-        data.books.filter((book) => book.status.name === "Not Published")
-      );
-    }
-    console.log(statusValue);
-  };
+  // const filterFunction = useCallback((statusValue) => {
+  //   // if (statusValue === "All") {
+  //   //   setBooks(data.books);
+  //   // } else if (statusValue === "Published") {
+  //   //   setBooks(data.books.filter((book) => book.status.name === "Published"));
+  //   // } else if (statusValue === "Not Published") {
+  //   //   setBooks(
+  //   //     data.books.filter((book) => book.status.name === "Not Published")
+  //   //   );
+  //   // }
+  //   // console.log(statusValue);
+  // }, [data.books]);
 
   // useEffect(() => {
-  //   filterFunction("All");
-  // }, [filterFunction]);
-
+  //   filterFunction('All');
+  // }, [filterFunction])
 
   if (loading) return "Loading...";
   if (error) return <pre>{error.message}</pre>;
 
   const statusFilterHandler = (filteredStatusValue) => {
     dataCtx.status = filteredStatusValue;
+    console.log(dataCtx.status);
+  };
+  const genreFilterHandler = (genre) => {
+    dataCtx.genre = genre;
+    console.log(dataCtx.genre);
   };
 
-  // if (dataCtx.status === "All") {
-  //   dataCtx.books = data.books;
-  // } else if (dataCtx.status === "Published") {
-  //   dataCtx.books = data.books.filter(
-  //     (book) => book.status.name === "Published"
-  //   );
-  // } else if (dataCtx.status === "Not Published") {
-  //   dataCtx.books = data.books.filter(
-  //     (book) => book.status.name === "Not Published"
-  //   );
-  // }
-
-  console.log(dataCtx.books);
-  console.log(dataCtx.status);
+  if (dataCtx.status === "All") {
+    dataCtx.books = data.books;
+  } else if (dataCtx.status === "Published") {
+    dataCtx.books = data.books.filter(
+      (book) => book.status.name === "Published"
+    );
+  } else if (dataCtx.status === "Not Published") {
+    dataCtx.books = data.books.filter(
+      (book) => book.status.name === "Not Published"
+    );
+  }
 
   return (
     <DataContext.Provider
       value={{
-        books: books,
-        query: ``,
+        books: dataCtx.books,
         genre: "",
         status: "",
       }}
@@ -82,7 +78,8 @@ export default function App() {
       <Layout>
         <Header
           onStatusFilterValue={statusFilterHandler}
-          booksProps={filterFunction}
+          onGenreFilterValue={genreFilterHandler}
+          // booksProps={filterFunction}
         />
         <DataBox />
       </Layout>

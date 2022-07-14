@@ -2,7 +2,7 @@ import { createContext } from "react";
 
 const DataContext = createContext({
   books: [],
-  genre: "",
+  genre: "All",
   status: "All",
 });
 
