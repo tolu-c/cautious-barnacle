@@ -1,11 +1,11 @@
 import { Fragment } from "react";
 import FilterBox from "./FilterBox";
-import Search from "./Search";
+// import Search from "./Search";
 
 const Header = () => {
   return (
     <Fragment>
-      <Search />
+      {/* <Search /> */}
       <FilterBox />
     </Fragment>
   );

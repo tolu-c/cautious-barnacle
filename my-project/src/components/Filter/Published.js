@@ -1,10 +1,6 @@
 import { useContext } from "react";
 import { useQuery, gql } from "@apollo/client";
-// import { request, gql } from "graphql-request";
-// import { useQuery } from "react-query";
 import DataContext from "../../store/data-context";
-
-// const endpoint = "https://mock-book-api.herokuapp.com/api/";
 
 const books = gql`
   {
