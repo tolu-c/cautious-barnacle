@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import DataBox from "./components/data/DataBox";
 import Header from "./components/Header";
 import Layout from "./components/ui/Layout";
@@ -24,33 +24,66 @@ const booksQuery = gql`
 export default function App() {
   const dataCtx = useContext(DataContext);
   dataCtx.query = booksQuery;
-
-  // const [books, setBooks] = useState([]);
-
   const { data, loading, error } = useQuery(dataCtx.query);
+
+  console.log(dataCtx);
+
+  const [books, setBooks] = useState([]);
+
+  const filterFunction = (statusValue) => {
+    if (statusValue === "All") {
+      setBooks(data.books);
+    } else if (statusValue === "Published") {
+      setBooks(data.books.filter((book) => book.status.name === "Published"));
+    } else if (statusValue === "Not Published") {
+      setBooks(
+        data.books.filter((book) => book.status.name === "Not Published")
+      );
+    }
+    console.log(statusValue);
+  };
+
+  // useEffect(() => {
+  //   filterFunction("All");
+  // }, [filterFunction]);
+
 
   if (loading) return "Loading...";
   if (error) return <pre>{error.message}</pre>;
 
-  // useEffect(()=> {
-  //   dataCtx.books = data.books;
-  //   setBooks(dataCtx.books);
-  // }, [dataCtx, dataCtx.books, data.books]);
+  const statusFilterHandler = (filteredStatusValue) => {
+    dataCtx.status = filteredStatusValue;
+  };
 
-  dataCtx.books = data.books;
+  // if (dataCtx.status === "All") {
+  //   dataCtx.books = data.books;
+  // } else if (dataCtx.status === "Published") {
+  //   dataCtx.books = data.books.filter(
+  //     (book) => book.status.name === "Published"
+  //   );
+  // } else if (dataCtx.status === "Not Published") {
+  //   dataCtx.books = data.books.filter(
+  //     (book) => book.status.name === "Not Published"
+  //   );
+  // }
+
   console.log(dataCtx.books);
+  console.log(dataCtx.status);
 
   return (
     <DataContext.Provider
       value={{
-        books: dataCtx.books,
+        books: books,
         query: ``,
         genre: "",
         status: "",
       }}
     >
       <Layout>
-        <Header />
+        <Header
+          onStatusFilterValue={statusFilterHandler}
+          booksProps={filterFunction}
+        />
         <DataBox />
       </Layout>
     </DataContext.Provider>

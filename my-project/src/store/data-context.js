@@ -2,9 +2,8 @@ import { createContext } from "react";
 
 const DataContext = createContext({
   books: [],
-  query: ``,
   genre: "",
-  status: "",
+  status: "All",
 });
 
 export default DataContext;
