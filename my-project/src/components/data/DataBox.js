@@ -2,11 +2,11 @@ import DataGroup from "./DataGroup";
 // import { gql, useQuery } from "@apollo/client";
 
 
-const DataBox = () => {
+const DataBox = ({filterValue}) => {
 
   return (
     <div className="flex flex-col items-start gap-y-8">
-      <DataGroup />
+      <DataGroup filterValue={filterValue} />
     </div>
   );
 };
