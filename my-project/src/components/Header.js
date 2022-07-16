@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import FilterBox from "./FilterBox";
 import Search from "./Search";
 
-const Header = ({ onStatusFilterValue, booksProps, onGenreFilterValue }) => {
+const Header = ({ onStatusFilterValue, booksProps, onGenreFilterValue,searchHandler }) => {
   const filteredStatusHandler = (statusValue) => {
     onStatusFilterValue(statusValue);
   };
@@ -13,7 +13,7 @@ const Header = ({ onStatusFilterValue, booksProps, onGenreFilterValue }) => {
 
   return (
     <Fragment>
-      <Search />
+      <Search searchHandler={searchHandler}/>
       <FilterBox
         onAddStatusValue={filteredStatusHandler}
         onAddGenreValue={filteredGenreHandler}

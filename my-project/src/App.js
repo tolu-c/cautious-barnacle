@@ -1,9 +1,9 @@
-import { useContext, useEffect } from "react";
-import DataBox from "./components/data/DataBox";
-import Header from "./components/Header";
-import Layout from "./components/ui/Layout";
-import DataContext from "./store/data-context";
-import { useQuery, gql } from "@apollo/client";
+import { useContext, useEffect, useState } from 'react'
+import DataBox from './components/data/DataBox'
+import Header from './components/Header'
+import Layout from './components/ui/Layout'
+import DataContext from './store/data-context'
+import { useQuery, gql } from '@apollo/client'
 
 const booksQuery = gql`
   {
@@ -19,12 +19,12 @@ const booksQuery = gql`
       created
     }
   }
-`;
+`
 
-export default function App() {
-  const dataCtx = useContext(DataContext);
+export default function App () {
+  const dataCtx = useContext(DataContext)
   // const [books, setBooks] = useState([]);
-  const { data, loading, error } = useQuery(booksQuery);
+  const { data, loading, error } = useQuery(booksQuery)
 
   // const filterFunction = useCallback((statusValue) => {
   //   // if (statusValue === "All") {
@@ -43,51 +43,62 @@ export default function App() {
   //   filterFunction('All');
   // }, [filterFunction])
 
-  if (loading) return "Loading...";
-  if (error) return <pre>{error.message}</pre>;
+  const [filterValue, setFilterValue] = useState('All')
 
-  const statusFilterHandler = (filteredStatusValue) => {
-    dataCtx.status = filteredStatusValue;
-    console.log(dataCtx.status);
-  };
-  const genreFilterHandler = (genre) => {
-    dataCtx.genre = genre;
-    console.log(dataCtx.genre);
-  };
+  if (loading) return 'Loading...'
+  if (error) return <pre>{error.message}</pre>
 
-  if (dataCtx.status === "All" && dataCtx.genre === "All") {
-    dataCtx.books = data.books;
-  } else if (dataCtx.status === "Published") {
-    if (dataCtx.genre === "Action") {
-      dataCtx.books = data.books.filter((book) => book.genre.name === "Action");
+  const statusFilterHandler = filteredStatusValue => {
+    dataCtx.status = filteredStatusValue
+    console.log(dataCtx.status)
+    setFilterValue(dataCtx.status)
+  }
+  const genreFilterHandler = genre => {
+    dataCtx.genre = genre
+    console.log(dataCtx.genre)
+    setFilterValue(dataCtx.genre)
+  }
+
+  if (dataCtx.status === 'All' && dataCtx.genre === 'All') {
+    dataCtx.books = data.books
+  } else if (dataCtx.status === 'Published') {
+    if (dataCtx.genre === 'Action') {
+      dataCtx.books = data.books.filter(book => book.genre.name === 'Action')
     }
 
+    dataCtx.books = data.books.filter(book => book.status.name === 'Published')
+  } else if (dataCtx.status === 'Not Published') {
     dataCtx.books = data.books.filter(
-      (book) => book.status.name === "Published"
-    );
-  } else if (dataCtx.status === "Not Published") {
-    dataCtx.books = data.books.filter(
-      (book) => book.status.name === "Not Published"
-    );
+      book => book.status.name === 'Not Published'
+    )
   }
-  
+
+  const searchHandler = e => {
+    console.log(e)
+    if (e.length == 0) {
+      setFilterValue('All')
+    } else {
+      setFilterValue(e)
+    }
+  }
 
   return (
     <DataContext.Provider
       value={{
         books: dataCtx.books,
-        genre: "",
-        status: "",
+        genre: '',
+        status: ''
       }}
     >
       <Layout>
         <Header
           onStatusFilterValue={statusFilterHandler}
           onGenreFilterValue={genreFilterHandler}
+          searchHandler={searchHandler}
           // booksProps={filterFunction}
         />
-        <DataBox />
+        <DataBox filterValue={filterValue} />
       </Layout>
     </DataContext.Provider>
-  );
+  )
 }
